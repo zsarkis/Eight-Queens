@@ -9,16 +9,25 @@ namespace EightQueens
 {
     public class Square
     {
-        public bool isQS, squareColor, squareAvailable;
+        public bool QueenOnSquare, SquareAvailable;
+        public SquareColor SquareColor;
         public int x, y;
-        public Square(Point point, bool isQ, bool squareColor, bool squareAvailable)
+        public Square(Point point, bool queenOnSquare, SquareColor squareColor, bool squareAvailable)
         {
             Rectangle myRect = new Rectangle(point.X, point.Y, 50, 50);
-            isQS = isQ;
-            this.squareColor = squareColor;
+            queenOnSquare = queenOnSquare;
+            this.SquareColor = squareColor;
             this.x = point.X;
             this.y = point.Y;
-            this.squareAvailable = squareAvailable;
+            this.SquareAvailable = squareAvailable;
         }
     }
+
+    public enum SquareColor
+    {
+        Black,
+        White
+    }
+
+
 }

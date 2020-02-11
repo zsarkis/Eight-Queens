@@ -18,36 +18,41 @@ namespace EightQueens
 
         public GameBoard()
         {
-            Point topOfSpacePoint = new Point(100, 100);
+            InitializeBoard(new Point(100, 100));
 
+            InitializeComponent();
+        }
+
+        #region Initialization
+
+        private void InitializeBoard(Point topOfSpacePoint)
+        {
             for (int x = 0; x < 8; x++)
             {
                 for (int y = 0; y < 8; y++)
                 {
-                    InitializeBoard(x, y, ref topOfSpacePoint);
+                    SortSquares(x, y, ref topOfSpacePoint);
                 }
 
                 topOfSpacePoint.X = topOfSpacePoint.X + 50;
 
                 topOfSpacePoint.Y = 100;
             }
-
-            InitializeComponent();
         }
 
-        private void InitializeBoard(int x, int y, ref Point topOfSpacePoint)
+        private void SortSquares(int x, int y, ref Point topOfSpacePoint)
         {
             if ((x + y) % 2 == 0)
             {
-                InitializeSquares(ref topOfSpacePoint, x, y, false);
+                InitializeSquares(ref topOfSpacePoint, x, y, SquareColor.White);
             }
             else
             {
-                InitializeSquares(ref topOfSpacePoint, x, y, true);
+                InitializeSquares(ref topOfSpacePoint, x, y, SquareColor.Black);
             }
         }
 
-        private void InitializeSquares(ref Point topOfSpacePoint, int x, int y, bool color)
+        private void InitializeSquares(ref Point topOfSpacePoint, int x, int y, SquareColor color)
         {
             Square p = new Square(topOfSpacePoint, false, color, true);
 
@@ -56,19 +61,19 @@ namespace EightQueens
             arrayAvail[x, y] = p;
         }
 
+        #endregion Initialization
+
         private void Clear_Click(object sender, EventArgs e)
-        { //clears the board
-            int x, y;
-            for (x = 0; x < 8; x++)
+        { 
+            for (int x = 0; x < 8; x++)
             {
-                for (y = 0; y < 8; y++)
+                for (int y = 0; y < 8; y++)
                 {
                     queenCount = 0;
                     label1.Text = String.Format("You have " + queenCount + " queens on the board.");
-                    Square temp = (Square)arrayAvail[x, y];
-                    temp.squareAvailable = true;
-                    temp.isQS = false;
-
+                    Square square = arrayAvail[x, y];
+                    square.SquareAvailable = true;
+                    square.QueenOnSquare = false;
                 }
             }
 
@@ -88,51 +93,70 @@ namespace EightQueens
             Graphics g = e.Graphics;
 
             Font myFont = new Font("Arial", 30, FontStyle.Bold);
-            int x, y;
-            int vertct = 101;
-            int horct = 101;
-            for (x = 0; x < 8; x++)
+
+            int verticalCount = 101;
+
+            int horizontalCount = 101;
+
+            for (int x = 0; x < 8; x++)
             {
-                for (y = 0; y < 8; y++)
+                for (int y = 0; y < 8; y++)
                 {
-                    Square temp = (Square)arrayAvail[x, y];
-                    if (temp.squareColor == false)
+                    Square square = arrayAvail[x, y];
+
+                    ColorSquare(horizontalCount, x, verticalCount, y, square, g);
+
+                    if (square.QueenOnSquare == true)
                     {
-                        g.FillRectangle(Brushes.White, horct + x * 50, vertct + y * 50, 49, 49);
-                    }
-                    if (temp.squareColor == true)
-                    {
-                        g.FillRectangle(Brushes.Black, horct + x * 50, vertct + y * 50, 49, 49);
-                    }
-                    if (Hint.Checked && (temp.squareAvailable == false))
-                    {
-                        g.FillRectangle(Brushes.Red, horct + x * 50, vertct + y * 50, 49, 49);
-                    }
-                    if (temp.isQS == true)
-                    {
-                        string s;
-                        s = "Q";
-                        int xx = (((int)temp.x) / 50) * 50; //round location
-                        int yy = (((int)temp.y) / 50) * 50;
+                        string s = "Q";
+
+                        int xRounded = (square.x / 50) * 50;
+                        int yRounded = (square.y / 50) * 50;
+
                         if (Hint.Checked == true)
                         {
-                            g.DrawString(s, myFont, Brushes.Black, xx + 2, yy + 2);
+                            g.DrawString(s, myFont, Brushes.Black, xRounded + 2, yRounded + 2);
                         }
                         if (Hint.Checked == false)
                         {
-                            if (((x + y) % 2) == 0)
+                            if ((x + y) % 2 == 0)
                             {
-                                g.DrawString(s, myFont, Brushes.Black, xx + 2, yy + 2);
+                                g.DrawString(s, myFont, Brushes.Black, xRounded + 2, yRounded + 2);
                             }
                             else
                             {
-                                g.DrawString(s, myFont, Brushes.White, xx + 2, yy + 2);
+                                g.DrawString(s, myFont, Brushes.White, xRounded + 2, yRounded + 2);
                             }
                         }
                     }
                 }
             }
-            //draw board
+
+            DrawBoardLines(g);
+        }
+
+        #region OnPaint Methods 
+
+        private void ColorSquare(int horct, int x, int vertct, int y, Square square, Graphics g)
+        {
+            Rectangle rectangle = new Rectangle(horct + x * 50, vertct + y * 50, 49, 49);
+
+            if (square.SquareColor == SquareColor.White)
+            {
+                g.FillRectangle(Brushes.White, rectangle);
+            }
+            if (square.SquareColor == SquareColor.Black)
+            {
+                g.FillRectangle(Brushes.Black, rectangle);
+            }
+            if (Hint.Checked && (square.SquareAvailable == false))
+            {
+                g.FillRectangle(Brushes.Red, rectangle);
+            }
+        }
+
+        private static void DrawBoardLines(Graphics g)
+        {
             g.DrawLine(Pens.Black, 100, 100, 100, 500);
             g.DrawLine(Pens.Black, 150, 100, 150, 500);
             g.DrawLine(Pens.Black, 200, 100, 200, 500);
@@ -154,6 +178,8 @@ namespace EightQueens
             g.DrawLine(Pens.Black, 100, 500, 500, 500);
         }
 
+        #endregion OnPaint Methods 
+
         private void Form1_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -167,14 +193,14 @@ namespace EightQueens
                     for (y = 0; y < 8; y++)
                     {
                         Square temp = (Square)arrayAvail[x, y];
-                        if ((xx == temp.x) && (yy == temp.y) && (temp.squareAvailable == false))
+                        if ((xx == temp.x) && (yy == temp.y) && (temp.SquareAvailable == false))
                         {
                             System.Media.SystemSounds.Beep.Play();
                         }
-                        if ((temp.isQS == false) && (xx == temp.x) && (yy == temp.y) && (temp.squareAvailable == true))
+                        if ((temp.QueenOnSquare == false) && (xx == temp.x) && (yy == temp.y) && (temp.SquareAvailable == true))
                         {
-                            temp.isQS = true;       //disable current spot and add queen
-                            temp.squareAvailable = false;
+                            temp.QueenOnSquare = true;       //disable current spot and add queen
+                            temp.SquareAvailable = false;
                             queenCount = queenCount + 1;
                             label1.Text = String.Format("You have " + queenCount + " queens on the board.");
                             this.Invalidate();
@@ -183,19 +209,19 @@ namespace EightQueens
                             for (n = 0; n < 8; n++)
                             {
                                 Square temp2 = (Square)arrayAvail[n, y];
-                                temp2.squareAvailable = false;
+                                temp2.SquareAvailable = false;
                             }
                             for (n = 0; n < 8; n++)
                             {
                                 Square temp3 = (Square)arrayAvail[x, n];
-                                temp3.squareAvailable = false;
+                                temp3.SquareAvailable = false;
                             }
                             int m = x;
                             n = y;//disable diagonal moves
                             while (n >= 0 && m < 8)             //upper right
                             {
                                 Square temp4 = (Square)arrayAvail[m, n];
-                                temp4.squareAvailable = false;
+                                temp4.SquareAvailable = false;
                                 n = n - 1;  //moving up one row
                                 m = m + 1;  //moving one column to the right
                                 //break;
@@ -205,7 +231,7 @@ namespace EightQueens
                             while (n >= 0 && m >= 0)             //upper left
                             {
                                 Square temp4 = (Square)arrayAvail[m, n];
-                                temp4.squareAvailable = false;
+                                temp4.SquareAvailable = false;
                                 n = n - 1;  //moving up one row
                                 m = m - 1;  //moving one column to the right
                                 //break;
@@ -215,7 +241,7 @@ namespace EightQueens
                             while (n < 8 && m >= 0)             //lower left
                             {
                                 Square temp4 = (Square)arrayAvail[m, n];
-                                temp4.squareAvailable = false;
+                                temp4.SquareAvailable = false;
                                 n = n + 1;  //moving up one row
                                 m = m - 1;  //moving one column to the right
                                 //break;
@@ -225,7 +251,7 @@ namespace EightQueens
                             while (n < 8 && m < 8)             //lower right
                             {
                                 Square temp4 = (Square)arrayAvail[m, n];
-                                temp4.squareAvailable = false;
+                                temp4.SquareAvailable = false;
                                 n = n + 1;  //moving up one row
                                 m = m + 1;  //moving one column to the right
                                 //break;
@@ -249,10 +275,10 @@ namespace EightQueens
                     for (y = 0; y < 8; y++)
                     {
                         Square temp = (Square)arrayAvail[x, y];
-                        if ((temp.isQS == true) && (xx == temp.x) && (yy == temp.y))
+                        if ((temp.QueenOnSquare == true) && (xx == temp.x) && (yy == temp.y))
                         {
-                            temp.isQS = false;       //disable current spot and add queen
-                            temp.squareAvailable = true;
+                            temp.QueenOnSquare = false;       //disable current spot and add queen
+                            temp.SquareAvailable = true;
                             queenCount = queenCount - 1;
                             label1.Text = String.Format("You have " + queenCount + " queens on the board.");
                             this.Invalidate();
@@ -261,19 +287,19 @@ namespace EightQueens
                             for (n = 0; n < 8; n++)
                             {
                                 Square temp2 = (Square)arrayAvail[n, y];
-                                temp2.squareAvailable = true;
+                                temp2.SquareAvailable = true;
                             }
                             for (n = 0; n < 8; n++)
                             {
                                 Square temp3 = (Square)arrayAvail[x, n];
-                                temp3.squareAvailable = true;
+                                temp3.SquareAvailable = true;
                             }
                             int m = x;
                             n = y;//disable diagonal moves
                             while (n >= 0 && m < 8)             //upper right
                             {
                                 Square temp4 = (Square)arrayAvail[m, n];
-                                temp4.squareAvailable = true;
+                                temp4.SquareAvailable = true;
                                 n = n - 1;  //moving up one row
                                 m = m + 1;  //moving one column to the right
                                 //break;
@@ -283,7 +309,7 @@ namespace EightQueens
                             while (n >= 0 && m >= 0)             //upper left
                             {
                                 Square temp4 = (Square)arrayAvail[m, n];
-                                temp4.squareAvailable = true;
+                                temp4.SquareAvailable = true;
                                 n = n - 1;  //moving up one row
                                 m = m - 1;  //moving one column to the right
                                 //break;
@@ -293,7 +319,7 @@ namespace EightQueens
                             while (n < 8 && m >= 0)             //lower left
                             {
                                 Square temp4 = (Square)arrayAvail[m, n];
-                                temp4.squareAvailable = true;
+                                temp4.SquareAvailable = true;
                                 n = n + 1;  //moving up one row
                                 m = m - 1;  //moving one column to the right
                                 //break;
@@ -303,7 +329,7 @@ namespace EightQueens
                             while (n < 8 && m < 8)             //lower right
                             {
                                 Square temp4 = (Square)arrayAvail[m, n];
-                                temp4.squareAvailable = true;
+                                temp4.SquareAvailable = true;
                                 n = n + 1;  //moving up one row
                                 m = m + 1;  //moving one column to the right
                                 //break;
@@ -317,10 +343,10 @@ namespace EightQueens
                     for (y = 0; y < 8; y++)
                     {
                         Square temp = (Square)arrayAvail[x, y];
-                        if ((temp.isQS == true))       //replace deleted spaces
+                        if ((temp.QueenOnSquare == true))       //replace deleted spaces
                         {
-                            temp.isQS = true;       //disable current spot and add queen
-                            temp.squareAvailable = false;
+                            temp.QueenOnSquare = true;       //disable current spot and add queen
+                            temp.SquareAvailable = false;
                             label1.Text = String.Format("You have " + queenCount + " queens on the board.");
                             this.Invalidate();
 
@@ -328,19 +354,19 @@ namespace EightQueens
                             for (n = 0; n < 8; n++)
                             {
                                 Square temp2 = (Square)arrayAvail[n, y];
-                                temp2.squareAvailable = false;
+                                temp2.SquareAvailable = false;
                             }
                             for (n = 0; n < 8; n++)
                             {
                                 Square temp3 = (Square)arrayAvail[x, n];
-                                temp3.squareAvailable = false;
+                                temp3.SquareAvailable = false;
                             }
                             int m = x;
                             n = y;//disable diagonal moves
                             while (n >= 0 && m < 8)             //upper right
                             {
                                 Square temp4 = (Square)arrayAvail[m, n];
-                                temp4.squareAvailable = false;
+                                temp4.SquareAvailable = false;
                                 n = n - 1;  //moving up one row
                                 m = m + 1;  //moving one column to the right
                                 //break;
@@ -350,7 +376,7 @@ namespace EightQueens
                             while (n >= 0 && m >= 0)             //upper left
                             {
                                 Square temp4 = (Square)arrayAvail[m, n];
-                                temp4.squareAvailable = false;
+                                temp4.SquareAvailable = false;
                                 n = n - 1;  //moving up one row
                                 m = m - 1;  //moving one column to the right
                                 //break;
@@ -360,7 +386,7 @@ namespace EightQueens
                             while (n < 8 && m >= 0)             //lower left
                             {
                                 Square temp4 = (Square)arrayAvail[m, n];
-                                temp4.squareAvailable = false;
+                                temp4.SquareAvailable = false;
                                 n = n + 1;  //moving up one row
                                 m = m - 1;  //moving one column to the right
                                 //break;
@@ -370,7 +396,7 @@ namespace EightQueens
                             while (n < 8 && m < 8)             //lower right
                             {
                                 Square temp4 = (Square)arrayAvail[m, n];
-                                temp4.squareAvailable = false;
+                                temp4.SquareAvailable = false;
                                 n = n + 1;  //moving up one row
                                 m = m + 1;  //moving one column to the right
                                 //break;
