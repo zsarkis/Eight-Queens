@@ -14,8 +14,9 @@ namespace EightQueens
         public int x, y;
         public Square(Point point, bool queenOnSquare, SquareColor squareColor, bool squareAvailable)
         {
-            Rectangle myRect = new Rectangle(point.X, point.Y, 50, 50);
-            queenOnSquare = queenOnSquare;
+            Rectangle myRect = new Rectangle(point.X, point.Y, 50, 50); //TODO: take another look at this.
+
+            this.QueenOnSquare = queenOnSquare;
             this.SquareColor = squareColor;
             this.x = point.X;
             this.y = point.Y;
@@ -28,6 +29,4 @@ namespace EightQueens
         Black,
         White
     }
-
-
 }

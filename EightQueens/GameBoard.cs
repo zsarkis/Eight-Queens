@@ -13,6 +13,7 @@ namespace EightQueens
 {
     public partial class GameBoard : Form
     {
+        //TODO: Move logic into a controller
         Square[,] arrayAvail = new Square[8, 8];
         int queenCount = 0;
 
@@ -136,7 +137,7 @@ namespace EightQueens
         }
 
         #region OnPaint Methods 
-
+        
         private void ColorSquare(int horct, int x, int vertct, int y, Square square, Graphics g)
         {
             Rectangle rectangle = new Rectangle(horct + x * 50, vertct + y * 50, 49, 49);
