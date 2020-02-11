@@ -1,0 +1,9 @@
+C:\Users\zsarkis\source\repos\Eight-Queens\EightQueens\bin\Debug\Lab4.exe.config
+C:\Users\zsarkis\source\repos\Eight-Queens\EightQueens\obj\Debug\Lab4.exe
+C:\Users\zsarkis\source\repos\Eight-Queens\EightQueens\obj\Debug\Lab4.pdb
+C:\Users\zsarkis\source\repos\Eight-Queens\EightQueens\bin\Debug\Lab4.exe
+C:\Users\zsarkis\source\repos\Eight-Queens\EightQueens\bin\Debug\Lab4.pdb
+C:\Users\zsarkis\source\repos\Eight-Queens\EightQueens\obj\Debug\EightQueens.csprojResolveAssemblyReference.cache
+C:\Users\zsarkis\source\repos\Eight-Queens\EightQueens\obj\Debug\EightQueens.GameBoard.resources
+C:\Users\zsarkis\source\repos\Eight-Queens\EightQueens\obj\Debug\Lab4.Properties.Resources.resources
+C:\Users\zsarkis\source\repos\Eight-Queens\EightQueens\obj\Debug\EightQueens.csproj.GenerateResource.Cache
