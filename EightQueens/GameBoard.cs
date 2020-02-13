@@ -65,7 +65,7 @@ namespace EightQueens
         #endregion Initialization
 
         private void Clear_Click(object sender, EventArgs e)
-        { 
+        {
             for (int x = 0; x < 8; x++)
             {
                 for (int y = 0; y < 8; y++)
@@ -109,26 +109,7 @@ namespace EightQueens
 
                     if (square.QueenOnSquare == true)
                     {
-                        string s = "Q";
-
-                        int xRounded = (square.x / 50) * 50;
-                        int yRounded = (square.y / 50) * 50;
-
-                        if (Hint.Checked == true)
-                        {
-                            g.DrawString(s, myFont, Brushes.Black, xRounded + 2, yRounded + 2);
-                        }
-                        if (Hint.Checked == false)
-                        {
-                            if ((x + y) % 2 == 0)
-                            {
-                                g.DrawString(s, myFont, Brushes.Black, xRounded + 2, yRounded + 2);
-                            }
-                            else
-                            {
-                                g.DrawString(s, myFont, Brushes.White, xRounded + 2, yRounded + 2);
-                            }
-                        }
+                        DrawQueen(square, g, myFont, x, y);
                     }
                 }
             }
@@ -137,7 +118,7 @@ namespace EightQueens
         }
 
         #region OnPaint Methods 
-        
+
         private void ColorSquare(int horct, int x, int vertct, int y, Square square, Graphics g)
         {
             Rectangle rectangle = new Rectangle(horct + x * 50, vertct + y * 50, 49, 49);
@@ -177,6 +158,21 @@ namespace EightQueens
             g.DrawLine(Pens.Black, 100, 400, 500, 400);
             g.DrawLine(Pens.Black, 100, 450, 500, 450);
             g.DrawLine(Pens.Black, 100, 500, 500, 500);
+        }
+
+        private void DrawQueen(Square square, Graphics g, Font myFont, int x, int y)
+        {
+            string queenIndicator = "Q";
+
+            int xRounded = (square.x / 50) * 50;
+            int yRounded = (square.y / 50) * 50;
+
+            g.DrawString(queenIndicator, myFont, Brushes.Black, xRounded + 2, yRounded + 2);
+
+            if (Hint.Checked == false && (x + y) % 2 == 1)
+            {
+                g.DrawString(queenIndicator, myFont, Brushes.White, xRounded + 2, yRounded + 2);
+            }
         }
 
         #endregion OnPaint Methods 
